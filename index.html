@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Australian Regulatory Compliance Module Overview Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .welcome-screen, .name-screen, .completion-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .question {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .options {
+            margin-bottom: 15px;
+        }
+        .option {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+        .selected {
+            background-color: #e0e0ff;
+            border-color: #b0b0ff;
+        }
+        .btn {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .btn.skip {
+            background-color: #ff9800;
+        }
+        .btn.skip:hover {
+            background-color: #e68a00;
+        }
+        .btn.restart {
+            background-color: #f44336;
+        }
+        .btn.restart:hover {
+            background-color: #d32f2f;
+        }
+        .progress {
+            margin-bottom: 20px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            height: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.3s ease;
+        }
+        .feedback {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .quiz-title {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+        .score-display {
+            font-weight: bold;
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .button-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .name-input {
+            width: 100%;
+            padding: 10px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .results-container {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: left;
+        }
+        .result-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .result-item.correct {
+            color: #155724;
+        }
+        .result-item.incorrect {
+            color: #721c24;
+        }
+        .certificate {
+            border: 5px solid #4CAF50;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        .certificate h2 {
+            color: #4CAF50;
+        }
+        .hidden {
+            display: none;
+        }
+        .question-counter {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .perfect-score {
+            color: #155724;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .incomplete-score {
+            color: #721c24;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .answers-summary-title {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .print-btn {
+            background-color: #2196F3;
+            margin-top: 20px;
+        }
+        .print-btn:hover {
+            background-color: #0b7dda;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="welcome-screen">
+            <h1>Australian Regulatory Compliance Module Overview Quiz</h1>
+            <p>Welcome to the Australian Regulatory Compliance Module Overview Quiz.</p>
+            <p>This quiz contains 30 questions about various Australian regulatory frameworks including PBS, healthcare, transport, sanctions, banking, and food standards.</p>
+            <p><strong>You must answer all 30 questions correctly (30/30) to complete the quiz successfully.</strong></p>
+            <p>You can skip questions and return to them later, but you must get every question right to pass.</p>
+            <button id="start-btn" class="btn">I'm Ready to Start</button>
+        </div>
+
+        <!-- Name Input Screen -->
+        <div id="name-screen" class="name-screen hidden">
+            <h1>Enter Your Name</h1>
+            <p>Please enter your full name to begin the quiz:</p>
+            <input type="text" id="user-name" class="name-input" placeholder="Your Full Name">
+            <button id="submit-name-btn" class="btn">Start Quiz</button>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-section" class="hidden">
+            <div class="progress">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+            <h2 class="quiz-title">Australian Regulatory Compliance Module Overview Quiz</h2>
+            <div class="question-counter">Question <span id="question-number">1</span> of 30</div>
+            <div class="score-display">Correct Answers: <span id="correct-count">0</span>/30</div>
+            <div id="feedback" class="feedback"></div>
+            <div class="quiz-container" id="quiz-container">
+                <div class="question" id="question"></div>
+                <div class="options" id="options"></div>
+                <div class="button-container">
+                    <button class="btn" id="submit-btn">Submit Answer</button>
+                    <button class="btn skip" id="skip-btn">Skip Question</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completion Screen -->
+        <div id="completion-screen" class="completion-screen hidden">
+            <h1>Quiz Completed!</h1>
+            <div id="completion-message"></div>
+            <div id="certificate-section" class="hidden">
+                <div class="certificate">
+                    <h2>Certificate of Completion</h2>
+                    <p>This certifies that</p>
+                    <h3 id="certificate-name"></h3>
+                    <p>has successfully completed the Australian Regulatory Compliance Module Overview Quiz</p>
+                    <p>with a perfect score of 30/30</p>
+                    <p>Date: <span id="completion-date"></span></p>
+                </div>
+                <button class="btn print-btn" id="print-certificate-btn">Print Certificate</button>
+            </div>
+            <div class="answers-summary-title">Your Answers Summary:</div>
+            <div id="answers-summary" class="results-container"></div>
+            <button class="btn restart" id="restart-quiz-btn">Start New Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data structure
+        const quizQuestions = [
+            {
+                question: "Under the National Health Act, which of the following is NOT a requirement for pharmaceutical benefits scheme (PBS) providers?",
+                options: [
+                    "Maintaining accurate dispensing records",
+                    "Verifying patient eligibility",
+                    "Providing quarterly financial statements to the Department of Health",
+                    "Complying with pricing policies"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Which body is responsible for administering the Pharmaceutical Benefits Scheme in Australia?",
+                options: [
+                    "Australian Medical Association",
+                    "Department of Health",
+                    "Therapeutic Goods Administration",
+                    "Medicare Australia"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Under the National Health Act, what is the maximum period for which a prescription for a pharmaceutical benefit may be valid?",
+                options: [
+                    "6 months",
+                    "12 months",
+                    "18 months",
+                    "24 months"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "When must a healthcare provider issue a fee notice to patients for services not fully covered by Medicare?",
+                options: [
+                    "Only when requested by the patient",
+                    "Before providing the service",
+                    "Within 7 days after providing the service",
+                    "Only for services exceeding $1,000"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which of the following must be included in a fee notice for healthcare services?",
+                options: [
+                    "The provider's qualifications",
+                    "An itemized breakdown of costs",
+                    "The provider's personal tax file number",
+                    "The patient's medical history"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is the primary purpose of fee notices in healthcare?",
+                options: [
+                    "To provide tax documentation for patients",
+                    "To inform patients of out-of-pocket expenses",
+                    "To track provider performance",
+                    "To facilitate insurance claims"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Under Australian road transport regulations, what is the maximum continuous driving time permitted for a solo heavy vehicle driver before a mandatory rest break?",
+                options: [
+                    "3 hours",
+                    "5 hours",
+                    "7 hours",
+                    "9 hours"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which of the following is NOT a category of driver fatigue management under the Heavy Vehicle National Law?",
+                options: [
+                    "Standard Hours",
+                    "Basic Fatigue Management",
+                    "Advanced Fatigue Management",
+                    "Premium Fatigue Management"
+                ],
+                correctAnswer: 3
+            },
+            {
+                question: "What document must commercial vehicle operators maintain to record driver activities including driving, rest, and work times?",
+                options: [
+                    "Vehicle maintenance log",
+                    "Work diary",
+                    "Fuel consumption record",
+                    "Route plan"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Under the Heavy Vehicle National Law, what is the general mass limit for a standard 6-axle articulated vehicle?",
+                options: [
+                    "42.5 tonnes",
+                    "45.5 tonnes",
+                    "50.5 tonnes",
+                    "55.5 tonnes"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Who has primary responsibility for ensuring compliance with load restraint requirements under the Heavy Vehicle National Law?",
+                options: [
+                    "The vehicle manufacturer",
+                    "The consignor of goods",
+                    "The driver and operator",
+                    "The road authority"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "What is the Chain of Responsibility (CoR) principle in heavy vehicle regulations?",
+                options: [
+                    "A system for tracking vehicle maintenance responsibilities",
+                    "A principle that extends legal liability to all parties who influence heavy vehicle operations",
+                    "A protocol for emergency response after accidents",
+                    "A method for determining insurance liability"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Under Australia's autonomous sanctions regime, what does a \"designated person\" refer to?",
+                options: [
+                    "A diplomat with special immunity",
+                    "An individual or entity subject to targeted financial sanctions",
+                    "A government official authorized to implement sanctions",
+                    "A customs officer responsible for enforcing sanctions"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which Australian government department is primarily responsible for administering autonomous sanctions?",
+                options: [
+                    "Department of Home Affairs",
+                    "Department of Foreign Affairs and Trade",
+                    "Department of Defence",
+                    "Australian Federal Police"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is required before dealing with a designated person or entity under the autonomous sanctions regime?",
+                options: [
+                    "Notification to the Australian Federal Police",
+                    "A permit or authorization from the Minister for Foreign Affairs",
+                    "Registration with the Department of Home Affairs",
+                    "Approval from the Australian Security Intelligence Organisation"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "UN Security Council sanctions are implemented in Australia through:",
+                options: [
+                    "Direct application of UN resolutions",
+                    "The Charter of the United Nations Act 1945",
+                    "Bilateral treaties with the UN",
+                    "State and territory legislation"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which of the following is NOT typically a target of UN Security Council sanctions?",
+                options: [
+                    "Weapons proliferation activities",
+                    "Terrorist financing",
+                    "Domestic tax evasion",
+                    "Human rights violations"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "What is the primary purpose of Security Council Sanctions Committee Alerts?",
+                options: [
+                    "To notify of changes to sanctioned individuals or entities",
+                    "To warn of potential terrorist attacks",
+                    "To announce trade embargoes",
+                    "To report sanctions violations"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Which regulatory body issues prudential standards for financial institutions in Australia?",
+                options: [
+                    "Australian Securities and Investments Commission (ASIC)",
+                    "Australian Prudential Regulation Authority (APRA)",
+                    "Reserve Bank of Australia (RBA)",
+                    "Australian Competition and Consumer Commission (ACCC)"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is the primary purpose of APRA's prudential standards?",
+                options: [
+                    "To maximize financial institution profits",
+                    "To ensure financial institutions maintain adequate capital and manage risks",
+                    "To regulate consumer lending rates",
+                    "To control foreign investment in financial institutions"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which of the following is NOT typically covered by APRA's prudential standards?",
+                options: [
+                    "Capital adequacy",
+                    "Risk management",
+                    "Corporate governance",
+                    "Product pricing strategies"
+                ],
+                correctAnswer: 3
+            },
+            {
+                question: "The Banking Executive Accountability Regime (BEAR) in Australia primarily aims to:",
+                options: [
+                    "Increase bank profitability",
+                    "Strengthen the responsibility and accountability of banks and their senior executives",
+                    "Reduce interest rates for consumers",
+                    "Increase competition among banks"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Under Australian banking standards, which of the following is a key requirement for managing liquidity risk?",
+                options: [
+                    "Maintaining a minimum Liquidity Coverage Ratio (LCR)",
+                    "Annual reporting to shareholders only",
+                    "Outsourcing all treasury functions",
+                    "Investing primarily in foreign currencies"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "Which of the following is NOT a pillar of the Basel III framework implemented in Australian banking standards?",
+                options: [
+                    "Capital requirements",
+                    "Leverage ratio",
+                    "Customer satisfaction metrics",
+                    "Liquidity requirements"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "In Australia, which body is responsible for developing and maintaining the Food Standards Code?",
+                options: [
+                    "Department of Health",
+                    "Food Standards Australia New Zealand (FSANZ)",
+                    "Australian Competition and Consumer Commission",
+                    "Department of Agriculture"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Under the Food Standards Code, what is required on food labels regarding allergens?",
+                options: [
+                    "Allergens must be listed only if they constitute more than 10% of the product",
+                    "Allergens must be declared regardless of the amount present",
+                    "Only the top three allergens must be listed",
+                    "Allergen information is optional for most products"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which of the following is NOT a requirement under the Food Safety Standards in Australia?",
+                options: [
+                    "Food handlers must have skills and knowledge in food safety",
+                    "Food businesses must have a food recall plan",
+                    "All food businesses must employ a full-time food safety officer",
+                    "Food must be stored at appropriate temperatures"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Who typically issues financial determinations regarding the operation of financial services laws in Australia?",
+                options: [
+                    "The Treasurer",
+                    "The Australian Securities and Investments Commission (ASIC)",
+                    "The Australian Stock Exchange",
+                    "The Federal Court"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "What is the primary purpose of a legislative instrument known as a \"financial determination\"?",
+                options: [
+                    "To set interest rates for bank loans",
+                    "To modify the application of financial services laws",
+                    "To determine penalties for financial crimes",
+                    "To allocate government funding to financial institutions"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Financial determinations made under the Corporations Act typically require:",
+                options: [
+                    "Approval by a majority vote in Parliament",
+                    "Registration on the Federal Register of Legislation",
+                    "Unanimous support from all financial institutions",
+                    "Approval from the Reserve Bank of Australia"
+                ],
+                correctAnswer: 1
+            }
+        ];
+
+        // Quiz state
+        let userName = "";
+        let currentQuestionIndex = 0;
+        let selectedOption = null;
+        let correctAnswers = new Set();
+        let answeredQuestions = new Set();
+        let questionOrder = [];
+        let userAnswers = {}; // To store user's answers for summary
+
+        // DOM elements
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const nameScreen = document.getElementById('name-screen');
+        const quizSection = document.getElementById('quiz-section');
+        const completionScreen = document.getElementById('completion-screen');
+        
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const submitButton = document.getElementById('submit-btn');
+        const skipButton = document.getElementById('skip-btn');
+        const feedbackElement = document.getElementById('feedback');
+        const questionNumberElement = document.getElementById('question-number');
+        const correctCountElement = document.getElementById('correct-count');
+        const progressBar = document.getElementById('progress-bar');
+        
+        const startButton = document.getElementById('start-btn');
+        const submitNameButton = document.getElementById('submit-name-btn');
+        const userNameInput = document.getElementById('user-name');
+        const completionMessageElement = document.getElementById('completion-message');
+        const certificateSectionElement = document.getElementById('certificate-section');
+        const certificateNameElement = document.getElementById('certificate-name');
+        const completionDateElement = document.getElementById('completion-date');
+        const restartQuizButton = document.getElementById('restart-quiz-btn');
+        const answersSummaryElement = document.getElementById('answers-summary');
+        const printCertificateButton = document.getElementById('print-certificate-btn');
+
+        // Initialize the quiz
+        function initQuiz() {
+            // Create question order (0-29)
+            questionOrder = Array.from({length: 30}, (_, i) => i);
+            
+            // Event listeners
+            startButton.addEventListener('click', showNameScreen);
+            submitNameButton.addEventListener('click', startQuiz);
+            submitButton.addEventListener('click', checkAnswer);
+            skipButton.addEventListener('click', skipQuestion);
+            restartQuizButton.addEventListener('click', restartQuiz);
+            
+            if (printCertificateButton) {
+                printCertificateButton.addEventListener('click', printCertificate);
+            }
+            
+            // Allow Enter key in name input
+            userNameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    startQuiz();
+                }
+            });
+        }
+
+        // Print certificate
+        function printCertificate() {
+            window.print();
+        }
+
+        // Show name input screen
+        function showNameScreen() {
+            welcomeScreen.classList.add('hidden');
+            nameScreen.classList.remove('hidden');
+            userNameInput.focus();
+        }
+
+        // Start the quiz
+        function startQuiz() {
+            userName = userNameInput.value.trim();
+            
+            if (!userName) {
+                alert("Please enter your name to continue.");
+                return;
+            }
+            
+            nameScreen.classList.add('hidden');
+            quizSection.classList.remove('hidden');
+            
+            currentQuestionIndex = 0;
+            userAnswers = {}; // Reset user answers
+            loadQuestion();
+        }
+
+        // Load a question
+        function loadQuestion() {
+            feedbackElement.innerHTML = '';
+            feedbackElement.className = 'feedback';
+            
+            if (currentQuestionIndex >= questionOrder.length) {
+                // If we've gone through all questions, check completion status
+                if (correctAnswers.size >= 30) {
+                    showCompletionScreen(true);
+                    return;
+                } else if (answeredQuestions.size >= 30) {
+                    showCompletionScreen(false);
+                    return;
+                } else {
+                    // Reset to first unanswered question
+                    for (let i = 0; i < questionOrder.length; i++) {
+                        if (!answeredQuestions.has(questionOrder[i])) {
+                            currentQuestionIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            let questionIndex = questionOrder[currentQuestionIndex];
+            let questionData = quizQuestions[questionIndex];
+            
+            // Display the question
+            questionElement.textContent = questionData.question;
+            questionNumberElement.textContent = questionIndex + 1;
+            
+            // Clear previous options
+            optionsElement.innerHTML = '';
+            
+            // Add options
+            questionData.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                optionElement.addEventListener('click', selectOption);
+                optionsElement.appendChild(optionElement);
+            });
+            
+            selectedOption = null;
+            submitButton.disabled = true;
+            
+            // Update progress
+            updateProgress();
+        }
+
+        // Update progress display
+        function updateProgress() {
+            correctCountElement.textContent = correctAnswers.size;
+            const progress = (correctAnswers.size / 30) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        // Handle option selection
+        function selectOption(e) {
+            // Remove selected class from all options
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            e.target.classList.add('selected');
+            selectedOption = parseInt(e.target.dataset.index);
+            submitButton.disabled = false;
+        }
+
+        // Skip the current question
+        function skipQuestion() {
+            // Move to next question
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        // Check the answer
+        function checkAnswer() {
+            let questionIndex = questionOrder[currentQuestionIndex];
+            let questionData = quizQuestions[questionIndex];
+            let correctAnswerIndex = questionData.correctAnswer;
+            
+            // Mark question as answered
+            answeredQuestions.add(questionIndex);
+            
+            // Store user's answer
+            userAnswers[questionIndex] = {
+                question: questionData.question,
+                userAnswer: questionData.options[selectedOption],
+                correctAnswer: questionData.options[correctAnswerIndex],
+                isCorrect: selectedOption === correctAnswerIndex
+            };
+            
+            const isCorrect = selectedOption === correctAnswerIndex;
+            
+            if (isCorrect) {
+                correctAnswers.add(questionIndex);
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.className = "feedback success";
+            } else {
+                // Remove from correct answers if it was previously correct
+                correctAnswers.delete(questionIndex);
+                feedbackElement.textContent = "Incorrect. Please try again or skip to continue.";
+                feedbackElement.className = "feedback error";
+            }
+            
+            // Check if all questions are answered correctly
+            if (correctAnswers.size >= 30) {
+                setTimeout(() => {
+                    showCompletionScreen(true);
+                }, 2000);
+                return;
+            }
+            
+            // Check if all questions are answered (but not all correct)
+            if (answeredQuestions.size >= 30 && correctAnswers.size < 30) {
+                setTimeout(() => {
+                    showCompletionScreen(false);
+                }, 2000);
+                return;
+            }
+            
+            // Move to next question after a delay
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 2000);
+        }
+
+        // Show completion screen
+        function showCompletionScreen(passed) {
+            quizSection.classList.add('hidden');
+            completionScreen.classList.remove('hidden');
+            
+            if (passed) {
+                // Perfect score - show certificate
+                completionMessageElement.innerHTML = `
+                    <div class="perfect-score">🎉 Congratulations ${userName}! 🎉</div>
+                    <p>You have successfully completed the Australian Regulatory Compliance Module Overview Quiz with a perfect score of 30/30!</p>
+                `;
+                
+                certificateSectionElement.classList.remove('hidden');
+                certificateNameElement.textContent = userName;
+                
+                const today = new Date();
+                completionDateElement.textContent = today.toLocaleDateString();
+            } else {
+                // Did not get perfect score
+                completionMessageElement.innerHTML = `
+                    <div class="incomplete-score">Quiz Completed</div>
+                    <p>Hello ${userName}, you have answered all 30 questions.</p>
+                    <p>Your score: ${correctAnswers.size}/30</p>
+                    <p><strong>You need a perfect score of 30/30 to pass this quiz.</strong></p>
+                    <p>Please try again to achieve the required score.</p>
+                `;
+                
+                certificateSectionElement.classList.add('hidden');
+            }
+            
+            // Display answers summary
+            displayAnswersSummary();
+        }
+        
+        // Display answers summary
+        function displayAnswersSummary() {
+            answersSummaryElement.innerHTML = '';
+            
+            // Sort questions by number
+            const sortedQuestions = Object.keys(userAnswers).sort((a, b) => parseInt(a) - parseInt(b));
+            
+            sortedQuestions.forEach(questionIndex => {
+                const answer = userAnswers[questionIndex];
+                const resultItem = document.createElement('div');
+                resultItem.className = `result-item ${answer.isCorrect ? 'correct' : 'incorrect'}`;
+                
+                resultItem.innerHTML = `
+                    <strong>Question ${parseInt(questionIndex) + 1}:</strong> ${answer.question}<br>
+                    <strong>Your answer:</strong> ${answer.userAnswer}<br>
+                    <strong>Correct answer:</strong> ${answer.correctAnswer}<br>
+                    <strong>Status:</strong> ${answer.isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                `;
+                
+                answersSummaryElement.appendChild(resultItem);
+            });
+        }
+
+        // Restart the quiz
+        function restartQuiz() {
+            // Reset all quiz state
+            currentQuestionIndex = 0;
+            correctAnswers = new Set();
+            answeredQuestions = new Set();
+            selectedOption = null;
+            userAnswers = {};
+            
+            // Show welcome screen
+            completionScreen.classList.add('hidden');
+            welcomeScreen.classList.remove('hidden');
+            
+            // Clear name input
+            userNameInput.value = '';
+        }
+
+        // Start the quiz
+        initQuiz();
+    </script>
+</body>
+</html>
