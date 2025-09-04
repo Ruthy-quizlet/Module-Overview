@@ -180,11 +180,36 @@
         .quiz-results {
             text-align: left;
             margin-top: 20px;
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
             border: 1px solid #ddd;
             padding: 15px;
             background-color: #f9f9f9;
+        }
+        .attempts-info {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e8f4f8;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .incorrect-answers {
+            color: #721c24;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: left;
+        }
+        .attempt-history {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .attempt-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -240,6 +265,7 @@
                     <p>with a perfect score of 30/30</p>
                     <p>Date: <span id="completion-date"></span></p>
                 </div>
+                <div id="attempts-info" class="attempts-info"></div>
                 <div id="quiz-results" class="quiz-results"></div>
             </div>
             <button class="btn restart" id="restart-quiz-btn">Start New Quiz</button>
@@ -559,6 +585,9 @@
         let answeredQuestions = new Set();
         let questionOrder = [];
         let userAnswers = [];
+        let attemptCount = 1;
+        let attemptHistory = [];
+        let currentAttemptAnswers = [];
 
         // DOM elements
         const welcomeScreen = document.getElementById('welcome-screen');
@@ -584,6 +613,7 @@
         const completionDateElement = document.getElementById('completion-date');
         const restartQuizButton = document.getElementById('restart-quiz-btn');
         const quizResultsElement = document.getElementById('quiz-results');
+        const attemptsInfoElement = document.getElementById('attempts-info');
 
         // Initialize the quiz
         function initQuiz() {
@@ -626,6 +656,7 @@
             
             currentQuestionIndex = 0;
             userAnswers = Array(30).fill(null);
+            currentAttemptAnswers = Array(30).fill(null);
             loadQuestion();
         }
 
@@ -637,9 +668,13 @@
             if (currentQuestionIndex >= questionOrder.length) {
                 // If we've gone through all questions, check completion status
                 if (correctAnswers.size >= 30) {
+                    // Save this attempt before showing completion
+                    saveCurrentAttempt();
                     showCompletionScreen(true);
                     return;
                 } else if (answeredQuestions.size >= 30) {
+                    // Save this attempt before showing completion
+                    saveCurrentAttempt();
                     showCompletionScreen(false);
                     return;
                 } else {
@@ -724,6 +759,7 @@
             
             // Store user's answer
             userAnswers[questionIndex] = selectedOption;
+            currentAttemptAnswers[questionIndex] = selectedOption;
             
             // Mark question as answered
             answeredQuestions.add(questionIndex);
@@ -744,6 +780,7 @@
             // Check if all questions are answered correctly
             if (correctAnswers.size >= 30) {
                 setTimeout(() => {
+                    saveCurrentAttempt();
                     showCompletionScreen(true);
                 }, 2000);
                 return;
@@ -752,6 +789,7 @@
             // Check if all questions are answered (but not all correct)
             if (answeredQuestions.size >= 30 && correctAnswers.size < 30) {
                 setTimeout(() => {
+                    saveCurrentAttempt();
                     showCompletionScreen(false);
                 }, 2000);
                 return;
@@ -762,6 +800,30 @@
                 currentQuestionIndex++;
                 loadQuestion();
             }, 2000);
+        }
+
+        // Save the current attempt
+        function saveCurrentAttempt() {
+            const incorrectAnswers = [];
+            
+            for (let i = 0; i < quizQuestions.length; i++) {
+                if (currentAttemptAnswers[i] !== null && currentAttemptAnswers[i] !== quizQuestions[i].correctAnswer) {
+                    incorrectAnswers.push({
+                        questionIndex: i,
+                        question: quizQuestions[i].question,
+                        userAnswer: quizQuestions[i].options[currentAttemptAnswers[i]],
+                        correctAnswer: quizQuestions[i].options[quizQuestions[i].correctAnswer]
+                    });
+                }
+            }
+            
+            attemptHistory.push({
+                attemptNumber: attemptCount,
+                score: correctAnswers.size,
+                incorrectAnswers: incorrectAnswers
+            });
+            
+            attemptCount++;
         }
 
         // Show completion screen
@@ -782,6 +844,9 @@
                 const today = new Date();
                 completionDateElement.textContent = today.toLocaleDateString();
                 
+                // Display attempts information
+                displayAttemptsInfo();
+                
                 // Display quiz results
                 displayQuizResults();
             } else {
@@ -794,7 +859,53 @@
                     <p>Please try again to achieve the required score.</p>
                 `;
                 
+                // Display incorrect answers
+                const lastAttempt = attemptHistory[attemptHistory.length - 1];
+                if (lastAttempt && lastAttempt.incorrectAnswers.length > 0) {
+                    let incorrectHtml = `<div class="incorrect-answers">
+                        <h3>Incorrect Answers:</h3>
+                        <ul>`;
+                    
+                    lastAttempt.incorrectAnswers.forEach(item => {
+                        incorrectHtml += `<li>
+                            <p><strong>Question ${item.questionIndex + 1}:</strong> ${item.question}</p>
+                            <p>Your answer: ${item.userAnswer}</p>
+                            <p>Correct answer: ${item.correctAnswer}</p>
+                        </li>`;
+                    });
+                    
+                    incorrectHtml += `</ul></div>`;
+                    completionMessageElement.innerHTML += incorrectHtml;
+                }
+                
                 certificateSectionElement.classList.add('hidden');
+            }
+        }
+        
+        // Display attempts information
+        function displayAttemptsInfo() {
+            attemptsInfoElement.innerHTML = `<h3>Attempt Summary:</h3>`;
+            
+            if (attemptHistory.length === 1) {
+                attemptsInfoElement.innerHTML += `<p>Congratulations! You passed on your first attempt with a perfect score of 30/30!</p>`;
+            } else {
+                attemptsInfoElement.innerHTML += `
+                    <p>You completed the quiz successfully on attempt #${attemptHistory.length} with a perfect score of 30/30.</p>
+                    <div class="attempt-history">
+                        <h4>Previous Attempts:</h4>
+                `;
+                
+                for (let i = 0; i < attemptHistory.length - 1; i++) {
+                    const attempt = attemptHistory[i];
+                    attemptsInfoElement.innerHTML += `
+                        <div class="attempt-item">
+                            <p><strong>Attempt #${attempt.attemptNumber}:</strong> Score ${attempt.score}/30</p>
+                            <p>Incorrect answers: ${attempt.incorrectAnswers.length}</p>
+                        </div>
+                    `;
+                }
+                
+                attemptsInfoElement.innerHTML += `</div>`;
             }
         }
         
@@ -821,12 +932,13 @@
 
         // Restart the quiz
         function restartQuiz() {
-            // Reset all quiz state
+            // Reset quiz state but keep attempt history
             currentQuestionIndex = 0;
             correctAnswers = new Set();
             answeredQuestions = new Set();
             selectedOption = null;
             userAnswers = Array(30).fill(null);
+            currentAttemptAnswers = Array(30).fill(null);
             
             // Show welcome screen
             completionScreen.classList.add('hidden');
@@ -841,4 +953,3 @@
     </script>
 </body>
 </html>
-<iframe width="640px" height="480px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=P-50kiWUCUGif5-xXBBnXYJEaNkDCJhKi2GZXuhMZrdUMjRFNkZSTE5EUE1RVEFOUFM0UFkySzUwTi4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen> </iframe>
