@@ -143,20 +143,11 @@
             border-radius: 5px;
             padding: 15px;
             background-color: #f9f9f9;
-            max-height: 300px;
-            overflow-y: auto;
-            text-align: left;
         }
         .result-item {
             margin-bottom: 10px;
             padding-bottom: 10px;
             border-bottom: 1px solid #eee;
-        }
-        .result-item.correct {
-            color: #155724;
-        }
-        .result-item.incorrect {
-            color: #721c24;
         }
         .certificate {
             border: 5px solid #4CAF50;
@@ -186,19 +177,14 @@
             font-size: 18px;
             margin-bottom: 20px;
         }
-        .answers-summary-title {
-            margin-top: 20px;
-            font-weight: bold;
+        .quiz-results {
             text-align: left;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-        }
-        .print-btn {
-            background-color: #2196F3;
             margin-top: 20px;
-        }
-        .print-btn:hover {
-            background-color: #0b7dda;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f9f9f9;
         }
     </style>
 </head>
@@ -208,7 +194,7 @@
         <div id="welcome-screen" class="welcome-screen">
             <h1>Australian Regulatory Compliance Module Overview Quiz</h1>
             <p>Welcome to the Australian Regulatory Compliance Module Overview Quiz.</p>
-            <p>This quiz contains 30 questions about various Australian regulatory frameworks including PBS, healthcare, transport, sanctions, banking, and food standards.</p>
+            <p>This quiz contains 30 questions about various regulatory compliance modules in Australia.</p>
             <p><strong>You must answer all 30 questions correctly (30/30) to complete the quiz successfully.</strong></p>
             <p>You can skip questions and return to them later, but you must get every question right to pass.</p>
             <button id="start-btn" class="btn">I'm Ready to Start</button>
@@ -254,10 +240,8 @@
                     <p>with a perfect score of 30/30</p>
                     <p>Date: <span id="completion-date"></span></p>
                 </div>
-                <button class="btn print-btn" id="print-certificate-btn">Print Certificate</button>
+                <div id="quiz-results" class="quiz-results"></div>
             </div>
-            <div class="answers-summary-title">Your Answers Summary:</div>
-            <div id="answers-summary" class="results-container"></div>
             <button class="btn restart" id="restart-quiz-btn">Start New Quiz</button>
         </div>
     </div>
@@ -266,304 +250,304 @@
         // Quiz data structure
         const quizQuestions = [
             {
-                question: "Under the National Health Act, which of the following is NOT a requirement for pharmaceutical benefits scheme (PBS) providers?",
+                question: "Which module assists reporting entities with their regulatory compliance regarding money laundering and terrorism financing risks?",
                 options: [
-                    "Maintaining accurate dispensing records",
-                    "Verifying patient eligibility",
-                    "Providing quarterly financial statements to the Department of Health",
-                    "Complying with pricing policies"
-                ],
-                correctAnswer: 2
-            },
-            {
-                question: "Which body is responsible for administering the Pharmaceutical Benefits Scheme in Australia?",
-                options: [
-                    "Australian Medical Association",
-                    "Department of Health",
-                    "Therapeutic Goods Administration",
-                    "Medicare Australia"
+                    "Sanctions",
+                    "Anti-Money Laundering and Counter Terrorism Financing",
+                    "Cybersecurity",
+                    "Financial Advisory"
                 ],
                 correctAnswer: 1
             },
             {
-                question: "Under the National Health Act, what is the maximum period for which a prescription for a pharmaceutical benefit may be valid?",
+                question: "What is the main regulator for the financial and asset management industries in Australia?",
                 options: [
-                    "6 months",
-                    "12 months",
-                    "18 months",
-                    "24 months"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "When must a healthcare provider issue a fee notice to patients for services not fully covered by Medicare?",
-                options: [
-                    "Only when requested by the patient",
-                    "Before providing the service",
-                    "Within 7 days after providing the service",
-                    "Only for services exceeding $1,000"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Which of the following must be included in a fee notice for healthcare services?",
-                options: [
-                    "The provider's qualifications",
-                    "An itemized breakdown of costs",
-                    "The provider's personal tax file number",
-                    "The patient's medical history"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "What is the primary purpose of fee notices in healthcare?",
-                options: [
-                    "To provide tax documentation for patients",
-                    "To inform patients of out-of-pocket expenses",
-                    "To track provider performance",
-                    "To facilitate insurance claims"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Under Australian road transport regulations, what is the maximum continuous driving time permitted for a solo heavy vehicle driver before a mandatory rest break?",
-                options: [
-                    "3 hours",
-                    "5 hours",
-                    "7 hours",
-                    "9 hours"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Which of the following is NOT a category of driver fatigue management under the Heavy Vehicle National Law?",
-                options: [
-                    "Standard Hours",
-                    "Basic Fatigue Management",
-                    "Advanced Fatigue Management",
-                    "Premium Fatigue Management"
-                ],
-                correctAnswer: 3
-            },
-            {
-                question: "What document must commercial vehicle operators maintain to record driver activities including driving, rest, and work times?",
-                options: [
-                    "Vehicle maintenance log",
-                    "Work diary",
-                    "Fuel consumption record",
-                    "Route plan"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Under the Heavy Vehicle National Law, what is the general mass limit for a standard 6-axle articulated vehicle?",
-                options: [
-                    "42.5 tonnes",
-                    "45.5 tonnes",
-                    "50.5 tonnes",
-                    "55.5 tonnes"
-                ],
-                correctAnswer: 0
-            },
-            {
-                question: "Who has primary responsibility for ensuring compliance with load restraint requirements under the Heavy Vehicle National Law?",
-                options: [
-                    "The vehicle manufacturer",
-                    "The consignor of goods",
-                    "The driver and operator",
-                    "The road authority"
-                ],
-                correctAnswer: 2
-            },
-            {
-                question: "What is the Chain of Responsibility (CoR) principle in heavy vehicle regulations?",
-                options: [
-                    "A system for tracking vehicle maintenance responsibilities",
-                    "A principle that extends legal liability to all parties who influence heavy vehicle operations",
-                    "A protocol for emergency response after accidents",
-                    "A method for determining insurance liability"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Under Australia's autonomous sanctions regime, what does a \"designated person\" refer to?",
-                options: [
-                    "A diplomat with special immunity",
-                    "An individual or entity subject to targeted financial sanctions",
-                    "A government official authorized to implement sanctions",
-                    "A customs officer responsible for enforcing sanctions"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Which Australian government department is primarily responsible for administering autonomous sanctions?",
-                options: [
-                    "Department of Home Affairs",
-                    "Department of Foreign Affairs and Trade",
-                    "Department of Defence",
-                    "Australian Federal Police"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "What is required before dealing with a designated person or entity under the autonomous sanctions regime?",
-                options: [
-                    "Notification to the Australian Federal Police",
-                    "A permit or authorization from the Minister for Foreign Affairs",
-                    "Registration with the Department of Home Affairs",
-                    "Approval from the Australian Security Intelligence Organisation"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "UN Security Council sanctions are implemented in Australia through:",
-                options: [
-                    "Direct application of UN resolutions",
-                    "The Charter of the United Nations Act 1945",
-                    "Bilateral treaties with the UN",
-                    "State and territory legislation"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Which of the following is NOT typically a target of UN Security Council sanctions?",
-                options: [
-                    "Weapons proliferation activities",
-                    "Terrorist financing",
-                    "Domestic tax evasion",
-                    "Human rights violations"
-                ],
-                correctAnswer: 2
-            },
-            {
-                question: "What is the primary purpose of Security Council Sanctions Committee Alerts?",
-                options: [
-                    "To notify of changes to sanctioned individuals or entities",
-                    "To warn of potential terrorist attacks",
-                    "To announce trade embargoes",
-                    "To report sanctions violations"
-                ],
-                correctAnswer: 0
-            },
-            {
-                question: "Which regulatory body issues prudential standards for financial institutions in Australia?",
-                options: [
-                    "Australian Securities and Investments Commission (ASIC)",
                     "Australian Prudential Regulation Authority (APRA)",
+                    "Australian Securities and Investment Commission (ASIC)",
                     "Reserve Bank of Australia (RBA)",
                     "Australian Competition and Consumer Commission (ACCC)"
                 ],
                 correctAnswer: 1
             },
             {
-                question: "What is the primary purpose of APRA's prudential standards?",
+                question: "Which module covers the wide range of regulatory requirements relating to the building industry, from licensing to planning and certification?",
                 options: [
-                    "To maximize financial institution profits",
-                    "To ensure financial institutions maintain adequate capital and manage risks",
-                    "To regulate consumer lending rates",
-                    "To control foreign investment in financial institutions"
+                    "Land & Property",
+                    "Building and Construction",
+                    "Facilities Management",
+                    "Infrastructure Resilience and Security"
                 ],
                 correctAnswer: 1
             },
             {
-                question: "Which of the following is NOT typically covered by APRA's prudential standards?",
+                question: "What framework does the Cybersecurity module use to show how organizations can implement governance structures?",
                 options: [
-                    "Capital adequacy",
-                    "Risk management",
-                    "Corporate governance",
-                    "Product pricing strategies"
-                ],
-                correctAnswer: 3
-            },
-            {
-                question: "The Banking Executive Accountability Regime (BEAR) in Australia primarily aims to:",
-                options: [
-                    "Increase bank profitability",
-                    "Strengthen the responsibility and accountability of banks and their senior executives",
-                    "Reduce interest rates for consumers",
-                    "Increase competition among banks"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Under Australian banking standards, which of the following is a key requirement for managing liquidity risk?",
-                options: [
-                    "Maintaining a minimum Liquidity Coverage Ratio (LCR)",
-                    "Annual reporting to shareholders only",
-                    "Outsourcing all treasury functions",
-                    "Investing primarily in foreign currencies"
-                ],
-                correctAnswer: 0
-            },
-            {
-                question: "Which of the following is NOT a pillar of the Basel III framework implemented in Australian banking standards?",
-                options: [
-                    "Capital requirements",
-                    "Leverage ratio",
-                    "Customer satisfaction metrics",
-                    "Liquidity requirements"
+                    "ISO 27001",
+                    "COBIT",
+                    "US National Institute of Standards and Technology (NIST) Cybersecurity Framework",
+                    "Australian Signals Directorate Framework"
                 ],
                 correctAnswer: 2
             },
             {
-                question: "In Australia, which body is responsible for developing and maintaining the Food Standards Code?",
+                question: "Which module provides guidance on steps to ensure that bribery and common corruption risks are identified and minimized?",
                 options: [
-                    "Department of Health",
-                    "Food Standards Australia New Zealand (FSANZ)",
-                    "Australian Competition and Consumer Commission",
-                    "Department of Agriculture"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Under the Food Standards Code, what is required on food labels regarding allergens?",
-                options: [
-                    "Allergens must be listed only if they constitute more than 10% of the product",
-                    "Allergens must be declared regardless of the amount present",
-                    "Only the top three allergens must be listed",
-                    "Allergen information is optional for most products"
-                ],
-                correctAnswer: 1
-            },
-            {
-                question: "Which of the following is NOT a requirement under the Food Safety Standards in Australia?",
-                options: [
-                    "Food handlers must have skills and knowledge in food safety",
-                    "Food businesses must have a food recall plan",
-                    "All food businesses must employ a full-time food safety officer",
-                    "Food must be stored at appropriate temperatures"
-                ],
-                correctAnswer: 2
-            },
-            {
-                question: "Who typically issues financial determinations regarding the operation of financial services laws in Australia?",
-                options: [
-                    "The Treasurer",
-                    "The Australian Securities and Investments Commission (ASIC)",
-                    "The Australian Stock Exchange",
-                    "The Federal Court"
+                    "Anti-Bribery and Corruption",
+                    "Corporations",
+                    "Competition and Consumer",
+                    "Global Environmental, Social and Governance (ESG)"
                 ],
                 correctAnswer: 0
             },
             {
-                question: "What is the primary purpose of a legislative instrument known as a \"financial determination\"?",
+                question: "What does the Chain of Responsibility (CoR) principle in the Transport and Logistics module primarily address?",
                 options: [
-                    "To set interest rates for bank loans",
-                    "To modify the application of financial services laws",
-                    "To determine penalties for financial crimes",
-                    "To allocate government funding to financial institutions"
+                    "Supply chain management",
+                    "Legal liability extension to all parties who influence heavy vehicle operations",
+                    "Vehicle maintenance responsibilities",
+                    "Driver training requirements"
                 ],
                 correctAnswer: 1
             },
             {
-                question: "Financial determinations made under the Corporations Act typically require:",
+                question: "Which module assists organizations in pricing their related-party international transactions in accordance with Australia's laws?",
                 options: [
-                    "Approval by a majority vote in Parliament",
-                    "Registration on the Federal Register of Legislation",
-                    "Unanimous support from all financial institutions",
-                    "Approval from the Reserve Bank of Australia"
+                    "Tax",
+                    "Transfer Pricing",
+                    "Global Environmental, Social and Governance (ESG)",
+                    "Foreign Companies"
                 ],
                 correctAnswer: 1
+            },
+            {
+                question: "What is the primary focus of the Modern Slavery module?",
+                options: [
+                    "Historical slavery practices",
+                    "Understanding modern slavery risks in operations and supply chains",
+                    "Human trafficking prevention",
+                    "Labor law compliance"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which module covers the requirements for the preparation of financial statements in accordance with Australian Accounting Standards?",
+                options: [
+                    "Tax",
+                    "Financial Advisory",
+                    "Financial Reports - Accounting and Auditing",
+                    "Corporations"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "What is a key aspect of the Sanctions module?",
+                options: [
+                    "Creating international trade agreements",
+                    "Avoiding breaching applicable sanctions regimes",
+                    "Establishing diplomatic relations",
+                    "Managing corporate tax obligations"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which module is specifically tailored for organizations that process and/or sell food to the aged and other vulnerable persons?",
+                options: [
+                    "Food Service to Aged and Other Vulnerable Persons",
+                    "Aged Care",
+                    "Community Care and Services",
+                    "Clinical Care and Allied Health Services"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "What is the focus of the Infrastructure Resilience and Security module?",
+                options: [
+                    "Building physical security systems",
+                    "Obligations under the critical infrastructure protection regime",
+                    "IT security protocols",
+                    "Emergency response planning"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which module covers the requirements for tertiary education providers to offer courses of study and qualifications?",
+                options: [
+                    "Education in Non-State Schools",
+                    "Commonwealth Tertiary Education",
+                    "Child Care and Education Services",
+                    "Clinical Care and Allied Health Services"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is the key focus of the Life Insurance module?",
+                options: [
+                    "Personal financial planning",
+                    "Regulatory compliance for life insurance businesses",
+                    "Insurance claim processing",
+                    "Customer relationship management"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which module addresses the legal responsibilities related to drones?",
+                options: [
+                    "Transport and Logistics",
+                    "Aviation",
+                    "Drones",
+                    "Infrastructure Resilience and Security"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "What does the Private Health Insurance module primarily outline?",
+                options: [
+                    "Health insurance marketing strategies",
+                    "Patient care guidelines",
+                    "Regulatory requirements for private health insurers",
+                    "Hospital management procedures"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Which module covers the obligations of credit rating agencies as AFS licensees?",
+                options: [
+                    "Financial Advisory",
+                    "Credit Rating of Financial Products",
+                    "Australian Financial Services Licence (Product Issuers)",
+                    "Finance and Leasing Companies"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is the primary focus of the Electronic Transactions module?",
+                options: [
+                    "Online banking security",
+                    "Digital marketing compliance",
+                    "Meeting information management obligations electronically",
+                    "E-commerce taxation"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Which module addresses the requirements for energy suppliers and sellers in Australia for consumers?",
+                options: [
+                    "Energy - Retail Markets Overview",
+                    "Facilities Management",
+                    "Environment",
+                    "Infrastructure Resilience and Security"
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "What is a key aspect of the Intellectual Property module?",
+                options: [
+                    "International trade agreements",
+                    "Requirements for protecting, maintaining, and monitoring intellectual property",
+                    "Software development guidelines",
+                    "Content creation standards"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which module focuses on the obligations of participants in the telecommunication industry?",
+                options: [
+                    "Social Media",
+                    "Telecommunications",
+                    "Infrastructure Resilience and Security",
+                    "Electronic Transactions"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is the primary focus of the Workers Compensation Insurance module?",
+                options: [
+                    "Employee health benefits",
+                    "Workplace safety protocols",
+                    "Insurer obligations for workers compensation coverage",
+                    "Injury prevention strategies"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Which module covers the obligations related to franchising activities?",
+                options: [
+                    "Retail",
+                    "Franchising",
+                    "Competition and Consumer",
+                    "Corporations"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is a key aspect of the Social Media module?",
+                options: [
+                    "Digital marketing strategies",
+                    "Content creation guidelines",
+                    "Obligations related to employee conduct on social media",
+                    "Website development standards"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "Which module addresses the obligations of casinos regarding gaming operations?",
+                options: [
+                    "Interactive Gambling",
+                    "Casinos",
+                    "Anti-Money Laundering and Counter Terrorism Financing",
+                    "Entertainment and Recreation"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is the primary focus of the New Zealand - Cybersecurity module?",
+                options: [
+                    "International cybersecurity laws",
+                    "Digital marketing compliance",
+                    "Securing digital information and systems in accordance with New Zealand legal obligations",
+                    "Software development standards"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "What is a key focus of the New Zealand - Anti-Money Laundering and Countering Financing of Terrorism module?",
+                options: [
+                    "International financial regulations",
+                    "Banking security protocols",
+                    "Lessening the likelihood that entity's services could be used in association with criminal activity",
+                    "Digital transaction monitoring"
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "What is the primary focus of the New Zealand - Work Health and Safety module?",
+                options: [
+                    "Employee benefits management",
+                    "Ensuring health and safety of workers by eliminating or minimizing risks",
+                    "Workplace productivity enhancement",
+                    "Employee training programs"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "Which module covers the obligations of port authorities and operators in Western Australia?",
+                options: [
+                    "Transport and Logistics",
+                    "Western Australia Ports Management",
+                    "Infrastructure Resilience and Security",
+                    "Western Australia State Government"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "What is a key aspect of the Charities module?",
+                options: [
+                    "Fundraising strategies",
+                    "Volunteer management",
+                    "Compliance obligations administered by ACNC",
+                    "Marketing for non-profits"
+                ],
+                correctAnswer: 2
             }
         ];
 
@@ -574,7 +558,7 @@
         let correctAnswers = new Set();
         let answeredQuestions = new Set();
         let questionOrder = [];
-        let userAnswers = {}; // To store user's answers for summary
+        let userAnswers = [];
 
         // DOM elements
         const welcomeScreen = document.getElementById('welcome-screen');
@@ -599,8 +583,7 @@
         const certificateNameElement = document.getElementById('certificate-name');
         const completionDateElement = document.getElementById('completion-date');
         const restartQuizButton = document.getElementById('restart-quiz-btn');
-        const answersSummaryElement = document.getElementById('answers-summary');
-        const printCertificateButton = document.getElementById('print-certificate-btn');
+        const quizResultsElement = document.getElementById('quiz-results');
 
         // Initialize the quiz
         function initQuiz() {
@@ -614,21 +597,12 @@
             skipButton.addEventListener('click', skipQuestion);
             restartQuizButton.addEventListener('click', restartQuiz);
             
-            if (printCertificateButton) {
-                printCertificateButton.addEventListener('click', printCertificate);
-            }
-            
             // Allow Enter key in name input
             userNameInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     startQuiz();
                 }
             });
-        }
-
-        // Print certificate
-        function printCertificate() {
-            window.print();
         }
 
         // Show name input screen
@@ -651,7 +625,7 @@
             quizSection.classList.remove('hidden');
             
             currentQuestionIndex = 0;
-            userAnswers = {}; // Reset user answers
+            userAnswers = Array(30).fill(null);
             loadQuestion();
         }
 
@@ -697,10 +671,19 @@
                 optionElement.dataset.index = index;
                 optionElement.addEventListener('click', selectOption);
                 optionsElement.appendChild(optionElement);
+                
+                // If this option was previously selected, mark it
+                if (userAnswers[questionIndex] === index) {
+                    optionElement.classList.add('selected');
+                    selectedOption = index;
+                    submitButton.disabled = false;
+                }
             });
             
-            selectedOption = null;
-            submitButton.disabled = true;
+            if (userAnswers[questionIndex] === null) {
+                selectedOption = null;
+                submitButton.disabled = true;
+            }
             
             // Update progress
             updateProgress();
@@ -739,16 +722,11 @@
             let questionData = quizQuestions[questionIndex];
             let correctAnswerIndex = questionData.correctAnswer;
             
+            // Store user's answer
+            userAnswers[questionIndex] = selectedOption;
+            
             // Mark question as answered
             answeredQuestions.add(questionIndex);
-            
-            // Store user's answer
-            userAnswers[questionIndex] = {
-                question: questionData.question,
-                userAnswer: questionData.options[selectedOption],
-                correctAnswer: questionData.options[correctAnswerIndex],
-                isCorrect: selectedOption === correctAnswerIndex
-            };
             
             const isCorrect = selectedOption === correctAnswerIndex;
             
@@ -803,6 +781,9 @@
                 
                 const today = new Date();
                 completionDateElement.textContent = today.toLocaleDateString();
+                
+                // Display quiz results
+                displayQuizResults();
             } else {
                 // Did not get perfect score
                 completionMessageElement.innerHTML = `
@@ -815,31 +796,26 @@
                 
                 certificateSectionElement.classList.add('hidden');
             }
-            
-            // Display answers summary
-            displayAnswersSummary();
         }
         
-        // Display answers summary
-        function displayAnswersSummary() {
-            answersSummaryElement.innerHTML = '';
+        // Display quiz results
+        function displayQuizResults() {
+            quizResultsElement.innerHTML = '<h3>Quiz Results:</h3>';
             
-            // Sort questions by number
-            const sortedQuestions = Object.keys(userAnswers).sort((a, b) => parseInt(a) - parseInt(b));
-            
-            sortedQuestions.forEach(questionIndex => {
-                const answer = userAnswers[questionIndex];
-                const resultItem = document.createElement('div');
-                resultItem.className = `result-item ${answer.isCorrect ? 'correct' : 'incorrect'}`;
+            quizQuestions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const correctAnswer = question.correctAnswer;
+                const isCorrect = userAnswer === correctAnswer;
                 
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
                 resultItem.innerHTML = `
-                    <strong>Question ${parseInt(questionIndex) + 1}:</strong> ${answer.question}<br>
-                    <strong>Your answer:</strong> ${answer.userAnswer}<br>
-                    <strong>Correct answer:</strong> ${answer.correctAnswer}<br>
-                    <strong>Status:</strong> ${answer.isCorrect ? '✓ Correct' : '✗ Incorrect'}
+                    <p><strong>Question ${index + 1}:</strong> ${question.question}</p>
+                    <p><strong>Your answer:</strong> ${question.options[userAnswer]}</p>
+                    <p><strong>Status:</strong> <span style="color: ${isCorrect ? 'green' : 'red'}">${isCorrect ? 'Correct' : 'Incorrect'}</span></p>
                 `;
                 
-                answersSummaryElement.appendChild(resultItem);
+                quizResultsElement.appendChild(resultItem);
             });
         }
 
@@ -850,7 +826,7 @@
             correctAnswers = new Set();
             answeredQuestions = new Set();
             selectedOption = null;
-            userAnswers = {};
+            userAnswers = Array(30).fill(null);
             
             // Show welcome screen
             completionScreen.classList.add('hidden');
